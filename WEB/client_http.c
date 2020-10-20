@@ -26,8 +26,8 @@ int http_get(char *nom_servidor, char *cadena_URI, char *resposta_header, char *
 
 int main(int argc, char *argv[]){
 	
-	char nom_servidor[]="35.186.238.101";
-	char cadena_URI[]="iotlab.euss.com";
+	char nom_servidor[]="192.168.11.185";
+	char cadena_URI[]="iotlab.euss.es";
 	char resposta_header[4256];
 	char resposta_data[4256];
 	
@@ -86,7 +86,7 @@ int http_get (char *nom_servidor, char *cadena_URI, char *resposta_header, char 
 			}
 		}
 	}
-	printf("Missatge rebut del servidor(bytes %d): %s\n\n%s\n", result, resposta_header, resposta_data);
+	printf("Missatge rebut del servidor(bytes %d): \nResposta:\n%s\n\nData:\n%s\n", result, resposta_header, resposta_data);
 
 	/*Tancar el socket*/
 	close(sFd);
