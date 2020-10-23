@@ -12,7 +12,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
-
+#include <getopt.h>
+#include <time.h> 
 
 #define REQUEST_MSG_SIZE 1024
 #define REPLY_MSG_SIZE 500
@@ -21,23 +22,56 @@
 int email( char *nom_servidor, char *email_destinatari, char *email_remitent, char *text_email);
 
 
-
 int main(int argc, char *argv[])
 {
+	char nom_servidor[32];
+	char email_destinatari[REPLY_MSG_SIZE]; 				//Email al que volem que arribin els correus.
+	char email_remitent[REPLY_MSG_SIZE]; 					//Email remitent dels correus.
+	char text_email[REPLY_MSG_SIZE] = "Hola,\nText del email de prova\n\nAtentament\n\nDaniel"; 	//Text del email.	
 
-	char nom_servidor[32] = "172.20.0.21"; 				
-	char email_destinatari[REPLY_MSG_SIZE] = "1104921@campus.euss.org"; 							//Email al que volem que arribin els correus.
-	char email_remitent[REPLY_MSG_SIZE] = "danielgm@me.com"; 										//Email remitent dels correus.
-	char text_email[REPLY_MSG_SIZE] = "Hola,\nText del email de prova\n\nAtentament\n\nDaniel"; 	//Text del email.
-	
+
+	int opt= 0;
+    static struct option long_options[] = 
+    {
+        {"servidor", required_argument, 0, 's'},
+        {"origen", required_argument, 0, 'o'},
+        {"desti", required_argument, 0, 'd'},
+        {0, 0, 0, 0}
+    };
+
+    int long_index =0;
+    while ((opt = getopt_long(argc, argv,"s:o:d:", long_options, &long_index )) != -1) 
+    {
+        switch (opt) 
+        {
+
+             case 's' : strcpy(nom_servidor, optarg); 
+                 break;
+             case 'o' : strcpy(email_remitent, optarg);
+                 break;
+             case 'd' : strcpy(email_destinatari, optarg);
+                 break;
+             default: 
+                 exit(EXIT_FAILURE);
+        }
+    }
+    
+    /*printf("Aquest codi està generant un email accedint des del terminal on les dades estàn organitzades de la següent manera:\n");
+    printf("./client -s 172.20.0.21 -o mailfals@euss.es -d 1104921@campus.euss.org");
+    delay(5000);
+    system("cls");
+    printf("Servidor: %s, Destinatari: %s, Remitent: %s.\n", nom_servidor, email_destinatari, email_remitent);*/
+
+
+
+
 	email(nom_servidor, email_destinatari, email_remitent, text_email);
-
-	return 0;
+	return(0);
 }
 
 int email( char *nom_servidor, char *email_destinatari, char *email_remitent, char *text_email)
 {
-	struct sockaddr_in serverAddr;
+		struct sockaddr_in serverAddr;
 	int sockAddrSize;
 	int sFd;
 	int result;
