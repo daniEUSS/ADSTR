@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <getopt.h>
 
 
 #define REQUEST_MSG_SIZE	1024
@@ -19,22 +20,57 @@
 #define SERVER_PORT_NUM		80
 
 
-
-
-
 int http_get(char *nom_servidor, char *cadena_URI, char *resposta_header, char *resposta_data);
 
-int main(int argc, char *argv[]){
-	
-	char nom_servidor[]="192.168.11.185";
-	char cadena_URI[]="iotlab.euss.es";
+
+int main(int argc, char **argv)
+{
+    int opc;
+    char nom_servidor[32];
+	char cadena_URI[32];
 	char resposta_header[4256];
 	char resposta_data[4256];
-	
-	http_get(nom_servidor, cadena_URI, resposta_header, resposta_data);
-	
-}
+    
+   while (1) {
+        int option_index = 0;
+        static struct option long_options[] = {
+            {"servidor",  	required_argument, 0, 's'},
+            {"recurs",  	required_argument, 0, 'r'},
+            {0,         0,                 0,  0 }
+        };
 
+       opc = getopt_long(argc, argv, "s:r:",
+                 long_options, &option_index);
+        if (opc == -1)
+            break;
+
+       switch (opc) {
+        
+            case 's':
+            strcpy(nom_servidor,optarg);
+            break;
+
+       case 'r':
+            strcpy(cadena_URI,optarg);
+            break;
+
+
+       default:
+            printf("?? getopt returned character code 0%o ??\n", opc);
+            break;
+        }
+    }
+
+   if (optind < argc) {
+        printf("non-option ARGV-elements: ");
+        while (optind < argc)
+            printf("%s ", argv[optind++]);
+        printf("\n");
+    }
+    
+	http_get(nom_servidor, cadena_URI, resposta_header, resposta_data);
+   exit(EXIT_SUCCESS);
+}
 int http_get (char *nom_servidor, char *cadena_URI, char *resposta_header, char *resposta_data){
 	
 	struct sockaddr_in	serverAddr;
@@ -42,11 +78,11 @@ int http_get (char *nom_servidor, char *cadena_URI, char *resposta_header, char 
 	int			sockAddrSize;
 	int			sFd;
 	int 		result;
-	char		buffer[4256];
+	char		buffer[8512];
 	char		missatge[64];
 	
 	sprintf(serverName,"%s",nom_servidor);
-	sprintf(missatge,"GET / HTTP/1.1\r\nHost_%s\r\n\r\n",cadena_URI);
+	sprintf(missatge,"GET %s HTTP/1.1\r\nHost: %s\r\n\r\n",cadena_URI,nom_servidor);
 
 	/*Crear el socket*/
 	sFd=socket(AF_INET,SOCK_STREAM,0);
@@ -93,3 +129,4 @@ int http_get (char *nom_servidor, char *cadena_URI, char *resposta_header, char 
 
 	return 0;
 	}
+
