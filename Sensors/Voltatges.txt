@@ -1,0 +1,5 @@
+Data i hora inici lectura: 2021-01-22 11:40:34
+Data i hora final lectura: 2021-01-22 13:16:23
+Valor màxim lectura: 3.1806
+Valor mínim lectura: 3.1194
+Valor mig lectura: 3.14408823529412

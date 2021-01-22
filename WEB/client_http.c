@@ -61,9 +61,9 @@ int main(int argc, char **argv)
 {
     int opc;
     char nom_servidor[32];
-	char cadena_URI[32];
-	char resposta_header[4256];
-	char resposta_data[4256];
+	char cadena_URI[5000];
+	char resposta_header[16384];
+	char resposta_data[16384];
     
    while (1) {
         int option_index = 0;
@@ -112,8 +112,8 @@ int http_get (char *nom_servidor, char *cadena_URI, char *resposta_header, char 
 	int			sockAddrSize;
 	int			sFd;
 	int 		result;
-	char		buffer[8512];
-	char		missatge[64];
+	char		buffer[10000];
+	char		missatge[5000];
 	
 	sprintf(serverName,"%s",nom_servidor);
 	sprintf(missatge,"GET %s HTTP/1.1\r\nHost: %s\r\n\r\n",cadena_URI,nom_servidor);
